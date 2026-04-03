@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Flight Search — Vijay HQ</title>
+  <meta name="description" content="Search flights powered by Google Flights data">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <div class="app" id="app">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="header-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="header-title">Flight Search</h1>
+          <p class="header-subtitle">Powered by Google Flights</p>
+        </div>
+      </div>
+      <button class="clear-btn" id="clear-btn" title="Clear chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+        </svg>
+      </button>
+    </header>
+
+    <!-- Chat area -->
+    <div class="chat-area" id="chat-area">
+
+      <!-- Welcome message -->
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">✈️</div>
+        <h2 class="welcome-title">Where to next?</h2>
+        <p class="welcome-desc">Search flights using natural language or the quick form below.</p>
+
+        <div class="quick-chips">
+          <button class="chip" data-query="SFO to JFK next Friday">SFO → JFK</button>
+          <button class="chip" data-query="LAX to London May 2026">LAX → LHR</button>
+          <button class="chip" data-query="NYC to Tokyo in June">JFK → NRT</button>
+          <button class="chip" data-query="SFO to Honolulu next month">SFO → HNL</button>
+        </div>
+      </div>
+
+      <!-- Messages will be inserted here -->
+    </div>
+
+    <!-- Input area -->
+    <div class="input-area">
+
+      <!-- Quick form (togglable) -->
+      <div class="quick-form" id="quick-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="input-origin">From</label>
+            <input type="text" id="input-origin" placeholder="SFO" maxlength="3" autocomplete="off">
+          </div>
+          <div class="form-swap" id="swap-btn" title="Swap airports">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="7 16 3 12 7 8" />
+              <polyline points="17 8 21 12 17 16" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+            </svg>
+          </div>
+          <div class="form-group">
+            <label for="input-dest">To</label>
+            <input type="text" id="input-dest" placeholder="JFK" maxlength="3" autocomplete="off">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group form-group--wide">
+            <label for="input-date">Departure</label>
+            <input type="date" id="input-date">
+          </div>
+          <div class="form-group">
+            <label for="input-class">Class</label>
+            <select id="input-class">
+              <option value="ECONOMY">Economy</option>
+              <option value="PREMIUM_ECONOMY">Premium</option>
+              <option value="BUSINESS">Business</option>
+              <option value="FIRST">First</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="input-stops">Stops</label>
+            <select id="input-stops">
+              <option value="ANY">Any</option>
+              <option value="NON_STOP">Nonstop</option>
+              <option value="ONE_STOP">≤1 stop</option>
+            </select>
+          </div>
+        </div>
+        <button class="search-btn" id="search-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          Search Flights
+        </button>
+      </div>
+
+      <!-- Toggle form button -->
+      <button class="toggle-form-btn" id="toggle-form-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+          <line x1="3" y1="9" x2="21" y2="9" />
+          <line x1="9" y1="21" x2="9" y2="9" />
+        </svg>
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      // ── Config ──
+      var API_URL = 'https://jarvis-api.platonicsundry.com/api.py/search-flights';
+      var LOCAL_API = 'http://localhost:5004/api/search-flights';
+
+      // Try local first, fall back to tunnel
+      var apiUrl = LOCAL_API;
+
+      // ── DOM ──
+      var chatArea = document.getElementById('chat-area');
+      var welcome = document.getElementById('welcome');
+      var searchBtn = document.getElementById('search-btn');
+      var clearBtn = document.getElementById('clear-btn');
+      var toggleFormBtn = document.getElementById('toggle-form-btn');
+      var quickForm = document.getElementById('quick-form');
+      var swapBtn = document.getElementById('swap-btn');
+      var originInput = document.getElementById('input-origin');
+      var destInput = document.getElementById('input-dest');
+      var dateInput = document.getElementById('input-date');
+      var classInput = document.getElementById('input-class');
+      var stopsInput = document.getElementById('input-stops');
+
+      // Set default date to 2 weeks from now
+      var defaultDate = new Date();
+      defaultDate.setDate(defaultDate.getDate() + 14);
+      dateInput.value = defaultDate.toISOString().split('T')[0];
+
+      // ── Helpers ──
+      function addMessage(type, html) {
+        welcome.style.display = 'none';
+        var msg = document.createElement('div');
+        msg.className = 'message message--' + type;
+        msg.innerHTML = html;
+        chatArea.appendChild(msg);
+        requestAnimationFrame(function () {
+          msg.classList.add('visible');
+          chatArea.scrollTop = chatArea.scrollHeight;
+        });
+        return msg;
+      }
+
+      function addLoading() {
+        var msg = addMessage('bot', '<div class="loading-dots"><span></span><span></span><span></span></div>');
+        msg.id = 'loading-msg';
+        return msg;
+      }
+
+      function removeLoading() {
+        var el = document.getElementById('loading-msg');
+        if (el) el.remove();
+      }
+
+      function formatPrice(price, currency) {
+        if (currency === 'USD') return '$' + price.toFixed(0);
+        return price.toFixed(0) + ' ' + currency;
+      }
+
+      function stopsText(stops) {
+        if (stops === 0) return 'Nonstop';
+        if (stops === 1) return '1 stop';
+        return stops + ' stops';
+      }
+
+      // ── Search ──
+      function searchFlights(origin, dest, date, cabinClass, maxStops) {
+        var queryText = origin.toUpperCase() + ' → ' + dest.toUpperCase() + ' on ' + date;
+        if (cabinClass !== 'ECONOMY') queryText += ' · ' + cabinClass.replace('_', ' ');
+        if (maxStops !== 'ANY') queryText += ' · ' + (maxStops === 'NON_STOP' ? 'Nonstop' : '≤1 stop');
+
+        addMessage('user', '<span class="msg-icon">✈️</span> ' + queryText);
+        addLoading();
+
+        var body = JSON.stringify({
+          origin: origin.toUpperCase(),
+          destination: dest.toUpperCase(),
+          departure_date: date,
+          cabin_class: cabinClass,
+          max_stops: maxStops,
+          sort_by: 'BEST',
+          adults: 1
+        });
+
+        fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: body
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            removeLoading();
+            if (data.error) {
+              addMessage('bot', '<div class="error-msg">⚠️ ' + data.error + '</div>');
+              return;
+            }
+            renderResults(data);
+          })
+          .catch(function (err) {
+            removeLoading();
+            // Try fallback to tunnel API
+            if (apiUrl === LOCAL_API) {
+              apiUrl = API_URL;
+              addMessage('bot', '<div class="info-msg">Connecting via tunnel...</div>');
+              fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: body
+              })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                  if (data.error) {
+                    addMessage('bot', '<div class="error-msg">⚠️ ' + data.error + '</div>');
+                    return;
+                  }
+                  renderResults(data);
+                })
+                .catch(function () {
+                  addMessage('bot', '<div class="error-msg">⚠️ Could not connect to flight search API. Is the server running?</div>');
+                });
+            } else {
+              addMessage('bot', '<div class="error-msg">⚠️ Could not connect to flight search API.</div>');
+            }
+          });
+      }
+
+      function renderResults(data) {
+        if (!data.flights || data.flights.length === 0) {
+          addMessage('bot', '<div class="no-results">No flights found for this route and date.</div>');
+          return;
+        }
+
+        var summary = '<div class="results-header">'
+          + '<span class="results-route">' + data.origin + ' → ' + data.destination + '</span>'
+          + '<span class="results-count">' + data.results_count + ' flights found</span>'
+          + '</div>';
+
+        var cards = '';
+        var flights = data.flights.slice(0, 10); // Show top 10
+
+        flights.forEach(function (f, idx) {
+          var firstLeg = f.legs[0];
+          var lastLeg = f.legs[f.legs.length - 1];
+
+          cards += '<div class="flight-card" style="animation-delay: ' + (idx * 60) + 'ms">';
+
+          // Price badge
+          cards += '<div class="flight-price">' + formatPrice(f.price, f.currency) + '</div>';
+
+          // Main info
+          cards += '<div class="flight-main">';
+          cards += '<div class="flight-times">';
+          cards += '<span class="flight-time">' + firstLeg.departure_time + '</span>';
+          cards += '<span class="flight-arrow">→</span>';
+          cards += '<span class="flight-time">' + lastLeg.arrival_time + '</span>';
+          cards += '</div>';
+
+          cards += '<div class="flight-meta">';
+          cards += '<span class="flight-airline">' + firstLeg.airline_name + '</span>';
+          cards += '<span class="flight-sep">·</span>';
+          cards += '<span class="flight-duration">' + f.duration_formatted + '</span>';
+          cards += '<span class="flight-sep">·</span>';
+          cards += '<span class="flight-stops flight-stops--' + (f.stops === 0 ? 'nonstop' : 'stops') + '">'
+            + stopsText(f.stops) + '</span>';
+          cards += '</div>';
+
+          // Multi-leg details
+          if (f.legs.length > 1) {
+            cards += '<div class="flight-legs">';
+            f.legs.forEach(function (leg) {
+              cards += '<div class="flight-leg">';
+              cards += '<span class="leg-route">' + leg.departure_airport + '→' + leg.arrival_airport + '</span>';
+              cards += '<span class="leg-airline">' + leg.airline_code + ' ' + leg.flight_number + '</span>';
+              cards += '</div>';
+            });
+            cards += '</div>';
+          } else {
+            cards += '<div class="flight-number">' + firstLeg.airline_code + ' ' + firstLeg.flight_number + '</div>';
+          }
+
+          cards += '</div>'; // flight-main
+          cards += '</div>'; // flight-card
+        });
+
+        addMessage('bot', summary + '<div class="flight-cards">' + cards + '</div>');
+      }
+
+      // ── Event Listeners ──
+      searchBtn.addEventListener('click', function () {
+        var origin = originInput.value.trim();
+        var dest = destInput.value.trim();
+        var date = dateInput.value;
+
+        if (!origin || !dest || !date) {
+          originInput.focus();
+          return;
+        }
+
+        searchFlights(origin, dest, date, classInput.value, stopsInput.value);
+      });
+
+      // Enter key in inputs
+      [originInput, destInput, dateInput].forEach(function (el) {
+        el.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') searchBtn.click();
+        });
+      });
+
+      // Auto-uppercase airport codes
+      [originInput, destInput].forEach(function (el) {
+        el.addEventListener('input', function () {
+          el.value = el.value.toUpperCase().replace(/[^A-Z]/g, '');
+        });
+      });
+
+      // Swap airports
+      swapBtn.addEventListener('click', function () {
+        var tmp = originInput.value;
+        originInput.value = destInput.value;
+        destInput.value = tmp;
+      });
+
+      // Toggle form
+      toggleFormBtn.addEventListener('click', function () {
+        quickForm.classList.toggle('collapsed');
+        toggleFormBtn.classList.toggle('rotated');
+      });
+
+      // Clear chat
+      clearBtn.addEventListener('click', function () {
+        var messages = chatArea.querySelectorAll('.message');
+        messages.forEach(function (m) { m.remove(); });
+        welcome.style.display = '';
+      });
+
+      // Quick chips
+      document.querySelectorAll('.chip').forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          var q = chip.dataset.query;
+          // Parse chip data - they map to known routes
+          var routes = {
+            'SFO to JFK next Friday': ['SFO', 'JFK'],
+            'LAX to London May 2026': ['LAX', 'LHR'],
+            'NYC to Tokyo in June': ['JFK', 'NRT'],
+            'SFO to Honolulu next month': ['SFO', 'HNL'],
+          };
+          var r = routes[q];
+          if (r) {
+            originInput.value = r[0];
+            destInput.value = r[1];
+            searchBtn.click();
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+
+</html>
